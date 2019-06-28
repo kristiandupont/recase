@@ -19,10 +19,10 @@ const toDash = recase(initialCase, 'dashCase');
 const s = 'some_string_Initially_set_with_snake_case';
 
 console.log('Camel cased version:', toCamel(s));
-// prints: "someStringInitiallySetWithSnakeCase"
+// prints: "Camel cased version: someStringInitiallySetWithSnakeCase"
 
 console.log('Dash cased version:', toDash(s));
-// prints: "some-string-initially-set-with-snake-case"
+// prints: "Dash cased version: some-string-initially-set-with-snake-case"
 ```
 
 ## Reference
