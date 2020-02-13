@@ -1,4 +1,4 @@
-import { head, tail, pipe, curry } from 'ramda';
+const { head, tail, pipe, curry } = require('ramda');
 
 /**
  * @typedef {'dash'|'snake'|'camel'|'pascal'} Casing
