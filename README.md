@@ -1,6 +1,6 @@
 # RECASE
 
-Change the casing of a string.
+Change and detect the casing of a string.
 
 ## Install
 ```
@@ -27,11 +27,12 @@ console.log('Dash cased version:', toDash(s));
 
 ## recase
 ```javascript
-recase(from, to)
+recase(from, to, str)
 ```
 
-Takes two casing parameters which can both be one of `dash`, `snake`, `camel` or `pascal`.
-It returns a function that converts strings from the `from` casing to the `to` casing.
+Takes two casing parameters which can both be one of `dash`, `snake`, `camel` or `pascal`. Additionally,
+`from` can be `mixed` or null which will make all word boundaries considered.
+The third parameter is the string to recase.
 
 
 ## detectCasing
@@ -39,8 +40,7 @@ It returns a function that converts strings from the `from` casing to the `to` c
 detectCasing(str)
 ```
 
-Takes a string that has been formatted. It will attempt to detect the casing and return it according to the 
-
+Takes a string that has been formatted. It will attempt to detect the casing.
 
 ## Casings
 
