@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "ramda": "^0.27.0"
+    "ramda": "^0.28.0"
   },
   "prettier": {
     "singleQuote": true,
