@@ -16,7 +16,7 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/node": "16.11.26",
     "jest": "27.5.1",
     "jest-each": "27.5.1"
