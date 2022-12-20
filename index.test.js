@@ -1,8 +1,9 @@
-const each = require('jest-each').default;
+import { describe, expect, it } from 'vitest';
+
 const { recase, detectCasing } = require('.');
 
 describe('recase', () => {
-  each([
+  [
     ['dash', 'dash', 'dash-cased-string', 'dash-cased-string'],
     ['dash', 'snake', 'dash-cased-string', 'dash_cased_string'],
     ['dash', 'camel', 'dash-cased-string', 'dashCasedString'],
@@ -19,40 +20,46 @@ describe('recase', () => {
     ['pascal', 'snake', 'PascalCasedString', 'pascal_cased_string'],
     ['pascal', 'camel', 'PascalCasedString', 'pascalCasedString'],
     ['pascal', 'pascal', 'PascalCasedString', 'PascalCasedString'],
-  ]).it('should recase from %s to %s', (from, to, source, expected) => {
-    expect(recase(from, to, source)).toBe(
-      expected
-    );
-  });
+  ].forEach(([from, to, source, expected]) =>
+    it('should recase from %s to %s', () => {
+      expect(recase(from, to, source)).toBe(expected);
+    })
+  );
 
   it('should curry', () => {
     const fromPascal = recase('pascal');
-    expect(fromPascal('dash', 'SomePascalCasedString')).toBe('some-pascal-cased-string');
+    expect(fromPascal('dash', 'SomePascalCasedString')).toBe(
+      'some-pascal-cased-string'
+    );
 
     const pascalToSnake = fromPascal('snake');
     expect(pascalToSnake('PasString')).toBe('pas_string');
   });
 
   it('should accept mixed input', () => {
-    expect(recase('mixed', 'dash', 'Some_Mixed-inputString')).toBe('some-mixed-input-string');
-    
+    expect(recase('mixed', 'dash', 'Some_Mixed-inputString')).toBe(
+      'some-mixed-input-string'
+    );
+
     // Curry with null which defaults to "mixed"
     const toCase = recase(null);
     expect(toCase('snake', 'InputString')).toBe('input_string');
     expect(toCase('dash', 'input_string')).toBe('input-string');
-  })
+  });
 });
 
 describe('detectCasing', () => {
-  each([
+  [
     ['dash-cased', 'dash'],
     ['snake_cased', 'snake'],
     ['camelCased', 'camel'],
     ['PascalCased', 'pascal'],
     ['Mixed-casing', 'mixed'],
     ['unknown', null],
-    ['', null]
-  ]).it('should detect casing in %s', (source, expected) => {
-    expect(detectCasing(source)).toBe(expected);
-  })
-})
+    ['', null],
+  ].forEach(([source, expected]) =>
+    it('should detect casing in %s', () => {
+      expect(detectCasing(source)).toBe(expected);
+    })
+  );
+});
