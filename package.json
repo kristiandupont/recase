@@ -1,6 +1,6 @@
 {
   "name": "@kristiandupont/recase",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": "git@github.com:kristiandupont/recase.git",
