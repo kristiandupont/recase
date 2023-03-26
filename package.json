@@ -12,11 +12,8 @@
   "dependencies": {
     "ramda": "^0.28.0"
   },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
+  "prettier": "@kristiandupont/prettier-config",
   "devDependencies": {
-    "@kristiandupont/dev-deps": "^1.1.0"
+    "@kristiandupont/dev-deps": "^1.5.0"
   }
 }
