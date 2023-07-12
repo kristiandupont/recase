@@ -14,6 +14,6 @@
   },
   "prettier": "@kristiandupont/prettier-config",
   "devDependencies": {
-    "@kristiandupont/dev-deps": "^2.0.0"
+    "@kristiandupont/dev-deps": "^2.5.0"
   }
 }
