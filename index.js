@@ -1,20 +1,20 @@
-const { head, tail, pipe, curry } = require('ramda');
+const { head, tail, pipe, curry } = require("ramda");
 
 /**
  * @typedef {'dash'|'snake'|'camel'|'pascal'} Casing
  * @typedef {Casing|'mixed'} WideCasing
  */
 
-const lowerCase = s => s.toLowerCase();
-const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
-const trimSeparators = s => s.replace(/^(\-|_)+|(\-|_)+$/g, '');
+const lowerCase = (s) => s.toLowerCase();
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const trimSeparators = (s) => s.replace(/^(\-|_)+|(\-|_)+$/g, "");
 
 const parsers = {
-  dash: s => s.split('-'),
-  snake: s => s.split('_'),
-  camel: s => s.split(/(?=[A-Z])/),
-  pascal: s => s.split(/(?=[A-Z])/),
-  mixed: s =>
+  dash: (s) => s.split("-"),
+  snake: (s) => s.split("_"),
+  camel: (s) => s.split(/(?=[A-Z])/),
+  pascal: (s) => s.split(/(?=[A-Z])/),
+  mixed: (s) =>
     s
       .split(/(?=[A-Z\-_])/)
       .map(trimSeparators)
@@ -22,10 +22,10 @@ const parsers = {
 };
 
 const composers = {
-  dash: a => a.map(lowerCase).join('-'),
-  snake: a => a.map(lowerCase).join('_'),
-  camel: a => [head(a).toLowerCase(), ...tail(a).map(capitalize)].join(''),
-  pascal: a => a.map(capitalize).join(''),
+  dash: (a) => a.map(lowerCase).join("-"),
+  snake: (a) => a.map(lowerCase).join("_"),
+  camel: (a) => [head(a).toLowerCase(), ...tail(a).map(capitalize)].join(""),
+  pascal: (a) => a.map(capitalize).join(""),
 };
 
 /**
@@ -34,33 +34,33 @@ const composers = {
  * @param {string} str string to recase
  */
 const recase = curry((from, to, str) =>
-  from === to ? str : pipe(parsers[from || 'mixed'], composers[to])(str)
+  from === to ? str : pipe(parsers[from || "mixed"], composers[to])(str),
 );
 
 /**
  * @param {string} str
  * @returns {WideCasing | null} returns detected casing or null if unknown
  */
-const detectCasing = str => {
+const detectCasing = (str) => {
   /** @type {WideCasing | null} */
   let result = null;
 
-  if (str.indexOf('_') !== -1) result = 'snake';
+  if (str.indexOf("_") !== -1) result = "snake";
 
-  if (str.indexOf('-') !== -1) {
+  if (str.indexOf("-") !== -1) {
     if (result) {
-      return 'mixed';
+      return "mixed";
     }
-    result = 'dash';
+    result = "dash";
   }
 
   if (str !== str.toLowerCase()) {
     if (result) {
-      return 'mixed';
+      return "mixed";
     }
     // Name has uppercase letters. Check if first letter is uppercase.
     const firstLetter = str.charAt(0);
-    result = firstLetter === firstLetter.toLowerCase() ? 'camel' : 'pascal';
+    result = firstLetter === firstLetter.toLowerCase() ? "camel" : "pascal";
   }
 
   return result;
