@@ -61,6 +61,9 @@ Takes a string that has been formatted. It will attempt to detect the casing.
 ## Casings
 
 - `dash`: `example-string`
+- `screamingDash`: `EXAMPLE-STRING`
 - `snake`: `example_string`
+- `screamingSnake`: `EXAMPLE_STRING`
 - `camel`: `exampleString`
 - `pascal`: `ExampleString`
+- `prose`: `example string`

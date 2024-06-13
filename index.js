@@ -1,19 +1,22 @@
 const { head, tail, pipe, curry } = require("ramda");
 
 /**
- * @typedef {'dash'|'snake'|'camel'|'pascal'} Casing
+ * @typedef {'dash'|'screamingDash'|'snake'|'screamingSnake'|'camel'|'pascal'|'prose'} Casing
  * @typedef {Casing|'mixed'} WideCasing
  */
 
 const lowerCase = (s) => s.toLowerCase();
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 const trimSeparators = (s) => s.replace(/^(\-|_)+|(\-|_)+$/g, "");
 
 const parsers = {
   dash: (s) => s.split("-"),
+  screamingDash: (s) => s.split("-"),
   snake: (s) => s.split("_"),
+  screamingSnake: (s) => s.split("_"),
   camel: (s) => s.split(/(?=[A-Z])/),
   pascal: (s) => s.split(/(?=[A-Z])/),
+  prose: (s) => s.split(" "),
   mixed: (s) =>
     s
       .split(/(?=[A-Z\-_])/)
@@ -23,9 +26,12 @@ const parsers = {
 
 const composers = {
   dash: (a) => a.map(lowerCase).join("-"),
+  screamingDash: (a) => a.map(lowerCase).join("-").toUpperCase(),
   snake: (a) => a.map(lowerCase).join("_"),
+  screamingSnake: (a) => a.map(lowerCase).join("_").toUpperCase(),
   camel: (a) => [head(a).toLowerCase(), ...tail(a).map(capitalize)].join(""),
   pascal: (a) => a.map(capitalize).join(""),
+  prose: (a) => a.map(lowerCase).join(" "),
 };
 
 /**
@@ -34,7 +40,7 @@ const composers = {
  * @param {string} str string to recase
  */
 const recase = curry((from, to, str) =>
-  from === to ? str : pipe(parsers[from || "mixed"], composers[to])(str),
+  from === to ? str : pipe(parsers[from || "mixed"], composers[to])(str)
 );
 
 /**
@@ -45,16 +51,44 @@ const detectCasing = (str) => {
   /** @type {WideCasing | null} */
   let result = null;
 
-  if (str.indexOf("_") !== -1) result = "snake";
+  /** @type {'none'|'upper'|'lower'|'mixed'} */
+  let letterCase = "none";
+  if (str.trim() !== "") {
+    letterCase =
+      str === str.toLowerCase()
+        ? "lower"
+        : str === str.toUpperCase()
+          ? "upper"
+          : "mixed";
+  }
+
+  if (str.indexOf("_") !== -1) {
+    if (letterCase === "upper") {
+      result = "screamingSnake";
+    } else {
+      result = "snake";
+    }
+  }
 
   if (str.indexOf("-") !== -1) {
     if (result) {
       return "mixed";
     }
-    result = "dash";
+    if (letterCase === "upper") {
+      result = "screamingDash";
+    } else {
+      result = "dash";
+    }
   }
 
-  if (str !== str.toLowerCase()) {
+  if (str.indexOf(" ") !== -1) {
+    if (result) {
+      return "mixed";
+    }
+    result = "prose";
+  }
+
+  if (letterCase === "mixed") {
     if (result) {
       return "mixed";
     }

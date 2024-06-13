@@ -1,35 +1,33 @@
+import { xprod } from "ramda";
 import { describe, expect, it } from "vitest";
 
 const { recase, detectCasing } = require(".");
 
+const examples = {
+  dash: "lorem-ipsum-dolor-sit-amet",
+  screamingDash: "LOREM-IPSUM-DOLOR-SIT-AMET",
+  snake: "lorem_ipsum_dolor_sit_amet",
+  screamingSnake: "LOREM_IPSUM_DOLOR_SIT_AMET",
+  camel: "loremIpsumDolorSitAmet",
+  pascal: "LoremIpsumDolorSitAmet",
+  prose: "lorem ipsum dolor sit amet",
+};
+
+const casings = Object.keys(examples);
+
 describe("recase", () => {
-  [
-    ["dash", "dash", "dash-cased-string", "dash-cased-string"],
-    ["dash", "snake", "dash-cased-string", "dash_cased_string"],
-    ["dash", "camel", "dash-cased-string", "dashCasedString"],
-    ["dash", "pascal", "dash-cased-string", "DashCasedString"],
-    ["snake", "dash", "snake_cased_string", "snake-cased-string"],
-    ["snake", "snake", "snake_cased_string", "snake_cased_string"],
-    ["snake", "camel", "snake_cased_string", "snakeCasedString"],
-    ["snake", "pascal", "snake_cased_string", "SnakeCasedString"],
-    ["camel", "dash", "camelCasedString", "camel-cased-string"],
-    ["camel", "snake", "camelCasedString", "camel_cased_string"],
-    ["camel", "camel", "camelCasedString", "camelCasedString"],
-    ["camel", "pascal", "camelCasedString", "CamelCasedString"],
-    ["pascal", "dash", "PascalCasedString", "pascal-cased-string"],
-    ["pascal", "snake", "PascalCasedString", "pascal_cased_string"],
-    ["pascal", "camel", "PascalCasedString", "pascalCasedString"],
-    ["pascal", "pascal", "PascalCasedString", "PascalCasedString"],
-  ].forEach(([from, to, source, expected]) =>
-    it("should recase from %s to %s", () => {
+  xprod(casings, casings).forEach(([from, to]) =>
+    it(`should recase from ${from} to ${to}`, () => {
+      const source = examples[from];
+      const expected = examples[to];
       expect(recase(from, to, source)).toBe(expected);
-    }),
+    })
   );
 
   it("should curry", () => {
     const fromPascal = recase("pascal");
     expect(fromPascal("dash", "SomePascalCasedString")).toBe(
-      "some-pascal-cased-string",
+      "some-pascal-cased-string"
     );
 
     const pascalToSnake = fromPascal("snake");
@@ -38,7 +36,7 @@ describe("recase", () => {
 
   it("should accept mixed input", () => {
     expect(recase("mixed", "dash", "Some_Mixed-inputString")).toBe(
-      "some-mixed-input-string",
+      "some-mixed-input-string"
     );
 
     // Curry with null which defaults to "mixed"
@@ -50,16 +48,13 @@ describe("recase", () => {
 
 describe("detectCasing", () => {
   [
-    ["dash-cased", "dash"],
-    ["snake_cased", "snake"],
-    ["camelCased", "camel"],
-    ["PascalCased", "pascal"],
+    ...casings.map((casing) => [examples[casing], casing]),
     ["Mixed-casing", "mixed"],
     ["unknown", null],
     ["", null],
   ].forEach(([source, expected]) =>
-    it("should detect casing in %s", () => {
+    it(`should detect casing in '${source}'`, () => {
       expect(detectCasing(source)).toBe(expected);
-    }),
+    })
   );
 });
