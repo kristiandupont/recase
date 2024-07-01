@@ -6,14 +6,14 @@ const { head, tail, pipe, curry } = require("ramda");
  */
 
 const lowerCase = (s) => s.toLowerCase();
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const trimSeparators = (s) => s.replace(/^(\-|_)+|(\-|_)+$/g, "");
 
 const parsers = {
   dash: (s) => s.split("-"),
-  screamingDash: (s) => s.split("-"),
+  screamingDash: (s) => s.split("-").map(lowerCase),
   snake: (s) => s.split("_"),
-  screamingSnake: (s) => s.split("_"),
+  screamingSnake: (s) => s.split("_").map(lowerCase),
   camel: (s) => s.split(/(?=[A-Z])/),
   pascal: (s) => s.split(/(?=[A-Z])/),
   prose: (s) => s.split(" "),

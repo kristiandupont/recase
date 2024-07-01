@@ -44,6 +44,10 @@ describe("recase", () => {
     expect(toCase("snake", "InputString")).toBe("input_string");
     expect(toCase("dash", "input_string")).toBe("input-string");
   });
+
+  it("should retain consecutive uppercase letters (issue #82)", () => {
+    expect(recase("snake", "pascal", "FOObar_baz")).toBe("FOObarBaz");
+  });
 });
 
 describe("detectCasing", () => {
