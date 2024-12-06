@@ -67,3 +67,4 @@ Takes a string that has been formatted. It will attempt to detect the casing.
 - `camel`: `exampleString`
 - `pascal`: `ExampleString`
 - `prose`: `example string`
+- `capitalProse`: `Example String`

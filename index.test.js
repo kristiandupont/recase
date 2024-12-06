@@ -11,6 +11,7 @@ const examples = {
   camel: "loremIpsumDolorSitAmet",
   pascal: "LoremIpsumDolorSitAmet",
   prose: "lorem ipsum dolor sit amet",
+  capitalProse: "Lorem Ipsum Dolor Sit Amet",
 };
 
 const casings = Object.keys(examples);

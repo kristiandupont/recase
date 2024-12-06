@@ -1,7 +1,7 @@
 const { head, tail, pipe, curry } = require("ramda");
 
 /**
- * @typedef {'dash'|'screamingDash'|'snake'|'screamingSnake'|'camel'|'pascal'|'prose'} Casing
+ * @typedef {'dash'|'screamingDash'|'snake'|'screamingSnake'|'camel'|'pascal'|'prose'|'capitalProse'} Casing
  * @typedef {Casing|'mixed'} WideCasing
  */
 
@@ -17,6 +17,7 @@ const parsers = {
   camel: (s) => s.split(/(?=[A-Z])/),
   pascal: (s) => s.split(/(?=[A-Z])/),
   prose: (s) => s.split(" "),
+  capitalProse: (s) => s.split(" "),
   mixed: (s) =>
     s
       .split(/(?=[A-Z\-_])/)
@@ -32,6 +33,7 @@ const composers = {
   camel: (a) => [head(a).toLowerCase(), ...tail(a).map(capitalize)].join(""),
   pascal: (a) => a.map(capitalize).join(""),
   prose: (a) => a.map(lowerCase).join(" "),
+  capitalProse: (a) => a.map(lowerCase).map(capitalize).join(" "),
 };
 
 /**
@@ -82,6 +84,16 @@ const detectCasing = (str) => {
   }
 
   if (str.indexOf(" ") !== -1) {
+    const words = str.split(" ");
+    const allWordsCapitalized = words.every(
+      (word) =>
+        word.length > 0 &&
+        word[0] === word[0].toUpperCase() &&
+        word.slice(1) === word.slice(1).toLowerCase()
+    );
+    if (allWordsCapitalized) {
+      return "capitalProse";
+    }
     if (result) {
       return "mixed";
     }
@@ -103,4 +115,6 @@ const detectCasing = (str) => {
 module.exports = {
   recase,
   detectCasing,
+  parsers,
+  composers,
 };
