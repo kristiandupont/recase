@@ -6,6 +6,9 @@
   "repository": "git@github.com:kristiandupont/recase.git",
   "author": "Kristian Dupont <kristian@kristiandupont.com>",
   "license": "MIT",
+  "files": [
+    "index.js"
+  ],
   "scripts": {
     "test": "vitest run"
   },
