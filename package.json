@@ -13,7 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "ramda": "^0.30.0"
+    "ramda": "^0.31.0"
   },
   "devDependencies": {
     "@kristiandupont/dev-deps": "^2.5.0"
