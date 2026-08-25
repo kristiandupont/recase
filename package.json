@@ -16,6 +16,6 @@
     "ramda": "^0.30.0"
   },
   "devDependencies": {
-    "@kristiandupont/dev-deps": "^2.5.0"
+    "@kristiandupont/dev-deps": "^3.0.0"
   }
 }
