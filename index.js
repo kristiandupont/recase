@@ -1,5 +1,3 @@
-const { head, tail, pipe, curry } = require("ramda");
-
 /**
  * @typedef {'dash'|'screamingDash'|'snake'|'screamingSnake'|'camel'|'pascal'|'prose'|'capitalProse'} Casing
  * @typedef {Casing|'mixed'} WideCasing
@@ -30,7 +28,8 @@ const composers = {
   screamingDash: (a) => a.map(lowerCase).join("-").toUpperCase(),
   snake: (a) => a.map(lowerCase).join("_"),
   screamingSnake: (a) => a.map(lowerCase).join("_").toUpperCase(),
-  camel: (a) => [head(a).toLowerCase(), ...tail(a).map(capitalize)].join(""),
+  camel: ([first, ...rest]) =>
+    [first.toLowerCase(), ...rest.map(capitalize)].join(""),
   pascal: (a) => a.map(capitalize).join(""),
   prose: (a) => a.map(lowerCase).join(" "),
   capitalProse: (a) => a.map(lowerCase).map(capitalize).join(" "),
@@ -41,9 +40,23 @@ const composers = {
  * @param {Casing} to target casing.
  * @param {string} str string to recase
  */
-const recase = curry((from, to, str) =>
-  from === to ? str : pipe(parsers[from || "mixed"], composers[to])(str)
-);
+const convert = (from, to, str) =>
+  from === to ? str : composers[to](parsers[from || "mixed"](str));
+
+// Curried like Ramda's curry: arguments may be supplied in any grouping,
+// e.g. recase(a, b, c), recase(a, b)(c), recase(a)(b, c) or recase(a)(b)(c).
+function recase(from, to, str) {
+  if (arguments.length >= 3) return convert(from, to, str);
+  if (arguments.length === 2) return (s) => convert(from, to, s);
+  if (arguments.length === 1) {
+    return function withFrom(to, str) {
+      if (arguments.length >= 2) return convert(from, to, str);
+      if (arguments.length === 1) return (s) => convert(from, to, s);
+      return withFrom;
+    };
+  }
+  return recase;
+}
 
 /**
  * @param {string} str

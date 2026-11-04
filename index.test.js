@@ -1,5 +1,5 @@
-import { xprod } from "ramda";
-import { describe, expect, it } from "vitest";
+const { describe, it } = require("node:test");
+const assert = require("node:assert/strict");
 
 const { recase, detectCasing } = require(".");
 
@@ -17,49 +17,54 @@ const examples = {
 const casings = Object.keys(examples);
 
 describe("recase", () => {
-  xprod(casings, casings).forEach(([from, to]) =>
-    it(`should recase from ${from} to ${to}`, () => {
-      const source = examples[from];
-      const expected = examples[to];
-      expect(recase(from, to, source)).toBe(expected);
-    })
-  );
+  for (const from of casings) {
+    for (const to of casings) {
+      it(`should recase from ${from} to ${to}`, () => {
+        assert.equal(recase(from, to, examples[from]), examples[to]);
+      });
+    }
+  }
 
   it("should curry", () => {
     const fromPascal = recase("pascal");
-    expect(fromPascal("dash", "SomePascalCasedString")).toBe(
+    assert.equal(
+      fromPascal("dash", "SomePascalCasedString"),
       "some-pascal-cased-string"
     );
 
     const pascalToSnake = fromPascal("snake");
-    expect(pascalToSnake("PasString")).toBe("pas_string");
+    assert.equal(pascalToSnake("PasString"), "pas_string");
+
+    assert.equal(recase("pascal", "snake")("PasString"), "pas_string");
+    assert.equal(recase("pascal")("snake")("PasString"), "pas_string");
   });
 
   it("should accept mixed input", () => {
-    expect(recase("mixed", "dash", "Some_Mixed-inputString")).toBe(
+    assert.equal(
+      recase("mixed", "dash", "Some_Mixed-inputString"),
       "some-mixed-input-string"
     );
 
     // Curry with null which defaults to "mixed"
     const toCase = recase(null);
-    expect(toCase("snake", "InputString")).toBe("input_string");
-    expect(toCase("dash", "input_string")).toBe("input-string");
+    assert.equal(toCase("snake", "InputString"), "input_string");
+    assert.equal(toCase("dash", "input_string"), "input-string");
   });
 
   it("should retain consecutive uppercase letters (issue #82)", () => {
-    expect(recase("snake", "pascal", "FOObar_baz")).toBe("FOObarBaz");
+    assert.equal(recase("snake", "pascal", "FOObar_baz"), "FOObarBaz");
   });
 });
 
 describe("detectCasing", () => {
-  [
+  for (const [source, expected] of [
     ...casings.map((casing) => [examples[casing], casing]),
     ["Mixed-casing", "mixed"],
     ["unknown", null],
     ["", null],
-  ].forEach(([source, expected]) =>
+  ]) {
     it(`should detect casing in '${source}'`, () => {
-      expect(detectCasing(source)).toBe(expected);
-    })
-  );
+      assert.equal(detectCasing(source), expected);
+    });
+  }
 });

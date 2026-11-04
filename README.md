@@ -36,7 +36,7 @@ console.log("Casing detected:", detectCasing(s));
 recase(from, to, str);
 ```
 
-Takes two casing parameters which can both be one of `dash`, `snake`, `camel` or `pascal`. Additionally,
+Takes two casing parameters which can both be any of the [casings](#casings) listed below. Additionally,
 `from` can be `mixed` or null which will make all word boundaries considered.
 The third parameter is the string to recase.
 This function is curried which means that if you call it with fewer than three parameters, the return value

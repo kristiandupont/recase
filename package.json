@@ -1,21 +1,16 @@
 {
   "name": "@kristiandupont/recase",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": "git@github.com:kristiandupont/recase.git",
   "author": "Kristian Dupont <kristian@kristiandupont.com>",
   "license": "MIT",
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "scripts": {
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "ramda": "^0.30.0"
-  },
-  "devDependencies": {
-    "@kristiandupont/dev-deps": "^2.5.0"
+    "test": "node --test"
   }
 }
