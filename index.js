@@ -5,7 +5,7 @@
 
 const lowerCase = (s) => s.toLowerCase();
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const trimSeparators = (s) => s.replace(/^(\-|_)+|(\-|_)+$/g, "");
+const trimSeparators = (s) => s.replace(/^[-_ ]+|[-_ ]+$/g, "");
 
 const parsers = {
   dash: (s) => s.split("-"),
@@ -18,7 +18,7 @@ const parsers = {
   capitalProse: (s) => s.split(" "),
   mixed: (s) =>
     s
-      .split(/(?=[A-Z\-_])/)
+      .split(/(?=[A-Z\-_ ])/)
       .map(trimSeparators)
       .filter(Boolean),
 };
@@ -28,7 +28,7 @@ const composers = {
   screamingDash: (a) => a.map(lowerCase).join("-").toUpperCase(),
   snake: (a) => a.map(lowerCase).join("_"),
   screamingSnake: (a) => a.map(lowerCase).join("_").toUpperCase(),
-  camel: ([first, ...rest]) =>
+  camel: ([first = "", ...rest]) =>
     [first.toLowerCase(), ...rest.map(capitalize)].join(""),
   pascal: (a) => a.map(capitalize).join(""),
   prose: (a) => a.map(lowerCase).join(" "),
@@ -40,8 +40,18 @@ const composers = {
  * @param {Casing} to target casing.
  * @param {string} str string to recase
  */
-const convert = (from, to, str) =>
-  from === to ? str : composers[to](parsers[from || "mixed"](str));
+const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+
+const convert = (from, to, str) => {
+  const source = from || "mixed";
+  if (!has(parsers, source)) {
+    throw new Error(`Unknown source casing "${from}"`);
+  }
+  if (!has(composers, to)) {
+    throw new Error(`Unknown target casing "${to}"`);
+  }
+  return from === to ? str : composers[to](parsers[source](str));
+};
 
 // Curried like Ramda's curry: arguments may be supplied in any grouping,
 // e.g. recase(a, b, c), recase(a, b)(c), recase(a)(b, c) or recase(a)(b)(c).
@@ -97,18 +107,18 @@ const detectCasing = (str) => {
   }
 
   if (str.indexOf(" ") !== -1) {
+    if (result) {
+      return "mixed";
+    }
     const words = str.split(" ");
     const allWordsCapitalized = words.every(
       (word) =>
         word.length > 0 &&
-        word[0] === word[0].toUpperCase() &&
+        word[0] !== word[0].toLowerCase() &&
         word.slice(1) === word.slice(1).toLowerCase()
     );
     if (allWordsCapitalized) {
       return "capitalProse";
-    }
-    if (result) {
-      return "mixed";
     }
     result = "prose";
   }

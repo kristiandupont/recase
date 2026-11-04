@@ -54,12 +54,35 @@ describe("recase", () => {
   it("should retain consecutive uppercase letters (issue #82)", () => {
     assert.equal(recase("snake", "pascal", "FOObar_baz"), "FOObarBaz");
   });
+
+  it("should split mixed input on spaces", () => {
+    assert.equal(recase(null, "snake", "hello world"), "hello_world");
+    assert.equal(recase(null, "snake", "Hello World"), "hello_world");
+    assert.equal(recase(null, "dash", "some  mixed_Input"), "some-mixed-input");
+  });
+
+  it("should handle input with no words", () => {
+    for (const to of casings) {
+      assert.equal(recase(null, to, ""), "");
+      assert.equal(recase(null, to, "---"), "");
+    }
+  });
+
+  it("should throw on unknown casings", () => {
+    assert.throws(() => recase("bogus", "camel", "foo"), /Unknown source casing "bogus"/);
+    assert.throws(() => recase("snake", "bogus", "foo"), /Unknown target casing "bogus"/);
+    assert.throws(() => recase("bogus", "bogus", "foo"), /Unknown source casing/);
+    assert.throws(() => recase("snake", "toString", "foo"), /Unknown target casing/);
+  });
 });
 
 describe("detectCasing", () => {
   for (const [source, expected] of [
     ...casings.map((casing) => [examples[casing], casing]),
     ["Mixed-casing", "mixed"],
+    ["Foo_bar Baz", "mixed"],
+    ["Foo-Bar Baz", "mixed"],
+    ["123 456", "prose"],
     ["unknown", null],
     ["", null],
   ]) {
