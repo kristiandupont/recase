@@ -2,6 +2,8 @@
 
 Change and detect the casing of a string.
 
+This library has no dependencies.
+
 ## Install
 
 ```
